@@ -1,5 +1,5 @@
-# Nome completo do primeiro membro: [Aluno que fez a entrega]
-# RA do primeiro membro: [Aluno que fez a entrega]
+# Nome completo do primeiro membro: Roger Honorato
+# RA do primeiro membro: 247617
 # Nome completo do segundo membro: [Segundo membro da equipe]
 # RA do segundo membro: [Segundo membro da equipe]
 
@@ -33,15 +33,27 @@ from utils import load_words, ALL_COLORS, load_words
 WORDS = load_words()   # Carrega a lista de palavras
 
 def player(guess_hist, res_hist):
-    
+    resp_chr = []  # Letras que estão na palavra correta
+    eliminadas = []  # Letras que não estão na palavra correta
+    correta = [1, 2, 3, 4, 5]  # resposta correta, com as letras em ordem (substitui o numero da posição com a letra)
+    ultima_tentativa = guess_hist[-1]
+    correção = res_hist[-1]   # nome da variavel estranho ?
+    for i in correção: # le a resposta da ultima tentativa
+        match i:
+            case "GREEN":
+                letra_correta = (ultima_tentativa.index(correção.index(i)))  # correlaciona a correção com o caractere
+                if letra_correta not in resp_chr:
+                    resp_chr.append(letra_correta)
+                correta.insert(ultima_tentativa.index(i), letra_correta)  # adiciona o caractere na posição correta | eu acho |
+            case "RED":
+                letra_eliminada = (ultima_tentativa.index(correção.index(i)))  # correlaciona a correção com o caractere
+                if letra_eliminada not in eliminadas:
+                    eliminadas.append(letra_eliminada)
+            case "YELLOW":
+                letra = (ultima_tentativa.index(correção.index(i)))  # correlaciona a correção com o caractere
+                if letra not in resp_chr:
+                    resp_chr.append(letra)
 
-    if 
-    else
-
-
-
-
-    global WORDS
-    guess = random.choice(WORDS) 
-    
-    return guess 
+    global words
+    guess = random.choice(words)
+    return guess
