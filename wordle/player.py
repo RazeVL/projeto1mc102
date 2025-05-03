@@ -35,25 +35,40 @@ WORDS = load_words()   # Carrega a lista de palavras
 def player(guess_hist, res_hist):
     resp_chr = []  # Letras que estão na palavra correta
     eliminadas = []  # Letras que não estão na palavra correta
-    correta = [1, 2, 3, 4, 5]  # resposta correta, com as letras em ordem (substitui o numero da posição com a letra)
+    correta = [0, 1, 2, 3, 4]  # resposta correta, com as letras em ordem
     ultima_tentativa = guess_hist[-1]
-    correção = res_hist[-1]   # nome da variavel estranho ?
-    for i in correção: # le a resposta da ultima tentativa
-        match i:
+    correção = res_hist[-1]
+
+    # relaciona as letras com a resposta
+    a = [
+        [ultima_tentativa[0], correção[0]],
+        [ultima_tentativa[1], correção[1]],
+        [ultima_tentativa[2], correção[2]],
+        [ultima_tentativa[3], correção[3]],
+        [ultima_tentativa[4], correção[4]],
+        ]
+
+    for sublist in a:
+        letra = sublist[0]
+
+        match sublist[1]:   # verifica qual a resposta
             case "GREEN":
-                letra_correta = (ultima_tentativa.index(correção.index(i)))  # correlaciona a correção com o caractere
-                if letra_correta not in resp_chr:
-                    resp_chr.append(letra_correta)
-                correta.insert(ultima_tentativa.index(i), letra_correta)  # adiciona o caractere na posição correta | eu acho |
+                if letra not in resp_chr:
+                    resp_chr.append(letra)
+
+                # adiciona o caractere na posição correta
+                correta.pop(a.index(sublist))
+                correta.insert(a.index(sublist), letra)
+
             case "RED":
-                letra_eliminada = (ultima_tentativa.index(correção.index(i)))  # correlaciona a correção com o caractere
-                if letra_eliminada not in eliminadas:
-                    eliminadas.append(letra_eliminada)
+                if letra not in eliminadas:
+                    eliminadas.append(letra)
+
             case "YELLOW":
-                letra = (ultima_tentativa.index(correção.index(i)))  # correlaciona a correção com o caractere
                 if letra not in resp_chr:
                     resp_chr.append(letra)
 
     global words
     guess = random.choice(words)
     return guess
+    
