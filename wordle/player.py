@@ -30,8 +30,22 @@ Para mais informações, reveja o README.md
 import random
 from utils import load_words, ALL_COLORS, load_words
 
-WORDS = load_words()   # Carrega a lista de palavras
+words = load_words()   # Carrega a lista de palavras
+placeholder = words.copy()
 
+for i in words:  # remove todas as palavras com tamanho invalido
+    if len(i) != 5:
+        placeholder.remove(i)
+words = placeholder.copy()
+
+def filtro(eliminadas):  # filtra a lista de palavras possíveis, removendo todas as que tem letras eliminadas
+    for word in words:
+        for char in word
+            if char in eliminadas:
+                placeholder.remove(word)
+                break
+    return placeholder
+    
 def player(guess_hist, res_hist):
     resp_chr = []  # Letras que estão na palavra correta
     eliminadas = []  # Letras que não estão na palavra correta
@@ -67,7 +81,8 @@ def player(guess_hist, res_hist):
             case "YELLOW":
                 if letra not in resp_chr:
                     resp_chr.append(letra)
-
+    
+    words = filtro(eliminadas)
     global words
     guess = random.choice(words)
     return guess
