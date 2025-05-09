@@ -15,7 +15,7 @@ Observações:
 - Você pode implementar outras funções para auxiliar a função `player`.
 - Você pode salvar informações entre os palpites usando variáveis globais (fora de qualquer função).
 - A função recebe duas listas como argumento:
-    - guess_hist: lista de palavras que foram chutadas anteriormente
+    - guess_hist: lista de lista_palavras que foram chutadas anteriormente
     - res_hist: lista de respostas dos chutes anteriores
 - A função deve retornar uma string como palpite
 
@@ -31,26 +31,23 @@ Para mais informações, reveja o README.md
 import random
 from utils import load_words, ALL_COLORS, load_words
 
-words = load_words()   # Carrega a lista de palavras
-placeholder = words.copy()
+lista_sem_filtro = load_words()   # Carrega a lista de lista_palavras
+palavras_filtradas = lista_sem_filtro.copy()
 
-for i in words:  # remove todas as palavras com tamanho invalido
+for i in lista_sem_filtro:  # remove todas as lista_palavras com tamanho invalido
     if len(i) != 5:
-        placeholder.remove(i)
-words = placeholder.copy()
+        palavras_filtradas.remove(i)
+lista_palavras = palavras_filtradas.copy()
 
 
-def filtro(eliminadas):  # filtra a lista de palavras possíveis, removendo todas as que tem letras eliminadas
-    try:
-        if type("".join(correta)) == str:   # verifica se a palavra ja foi descoberta, e se sim, retorna ela.
-            return ("".join(correta))
-    except TypeError:
-        for palavras in words:
-            for char in palavras:
-                if char in eliminadas:
-                    placeholder.remove(palavras)
-                    break
-    return placeholder
+def filtro(eliminadas):  # filtra a lista de lista_palavras possíveis, removendo todas as que tem letras eliminadas
+    placeholder = lista_palavras.copy()
+    for word in placeholder:
+        for char in word:
+            if (char in eliminadas):
+                lista_palavras.remove(word)
+                break
+    return lista_palavras
 
 
 resp_chr = []  # Letras que estão na palavra correta
@@ -77,23 +74,30 @@ def player(guess_hist, res_hist):
                 case "GREEN":
                     if letra not in resp_chr:
                         resp_chr.append(letra)
+                    if letra in eliminadas:
+                        eliminadas.remove(letra)
                     # adiciona o caractere na posição correta
                     correta.pop(a.index(sublist))
                     correta.insert(a.index(sublist), letra)
 
                 case "RED":
-                    if letra not in eliminadas:
+                    if letra not in eliminadas and (letra not in resp_chr):
                         eliminadas.append(letra)
 
                 case "YELLOW":
                     if letra not in resp_chr:
                         resp_chr.append(letra)
+                    if letra in eliminadas:
+                        eliminadas.remove(letra)
 
-        global words
-        words = filtro(eliminadas)
-        guess = random.choice(words)
-        print(f"{correta}\n{resp_chr}\n{eliminadas}")
-        return guess
+        global lista_palavras
+        global lista_sem_filtro
 
+        if len("".join(correta)) != 5:
+            lista_palavras = filtro(eliminadas)
+            guess = random.choice(lista_palavras)
+        else:
+            guess = "".join(correta)
     else:
-        return "aureo"  # palavra de início, provavelmente não pode enviar assim
+        guess = random.choice(lista_palavras)
+    return guess
