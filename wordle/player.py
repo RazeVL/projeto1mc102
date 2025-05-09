@@ -1,3 +1,4 @@
+
 # Nome completo do primeiro membro: Roger Honorato
 # RA do primeiro membro: 247617
 # Nome completo do segundo membro: [Segundo membro da equipe]
@@ -23,7 +24,7 @@ Lembretes:
     - Correto: verde ("GREEN")
     - Presente mas na posição errada: amarelo ("YELLOW")
     - Ausente: vermelho ("RED")
-    
+
 Para mais informações, reveja o README.md
 """
 
@@ -38,52 +39,61 @@ for i in words:  # remove todas as palavras com tamanho invalido
         placeholder.remove(i)
 words = placeholder.copy()
 
+
 def filtro(eliminadas):  # filtra a lista de palavras possíveis, removendo todas as que tem letras eliminadas
-    for word in words:
-        for char in word
-            if char in eliminadas:
-                placeholder.remove(word)
-                break
+    try:
+        if type("".join(correta)) == str:   # verifica se a palavra ja foi descoberta, e se sim, retorna ela.
+            return ("".join(correta))
+    except TypeError:
+        for palavras in words:
+            for char in palavras:
+                if char in eliminadas:
+                    placeholder.remove(palavras)
+                    break
     return placeholder
-    
+
+
+resp_chr = []  # Letras que estão na palavra correta
+eliminadas = []  # Letras que não estão na palavra correta
+correta = ["", "", "", "", ""]  # resposta correta, com as letras em ordem
+
+
 def player(guess_hist, res_hist):
-    resp_chr = []  # Letras que estão na palavra correta
-    eliminadas = []  # Letras que não estão na palavra correta
-    correta = [0, 1, 2, 3, 4]  # resposta correta, com as letras em ordem
-    ultima_tentativa = guess_hist[-1]
-    correção = res_hist[-1]
+    if guess_hist != [] and res_hist != []:
+        ultima_tentativa = guess_hist[-1]
+        correção = res_hist[-1]
+        # relaciona as letras com a resposta
+        a = [
+            [ultima_tentativa[0], correção[0]],
+            [ultima_tentativa[1], correção[1]],
+            [ultima_tentativa[2], correção[2]],
+            [ultima_tentativa[3], correção[3]],
+            [ultima_tentativa[4], correção[4]],
+            ]
+        for sublist in a:
+            letra = sublist[0]
 
-    # relaciona as letras com a resposta
-    a = [
-        [ultima_tentativa[0], correção[0]],
-        [ultima_tentativa[1], correção[1]],
-        [ultima_tentativa[2], correção[2]],
-        [ultima_tentativa[3], correção[3]],
-        [ultima_tentativa[4], correção[4]],
-        ]
+            match sublist[1]:   # verifica qual a resposta
+                case "GREEN":
+                    if letra not in resp_chr:
+                        resp_chr.append(letra)
+                    # adiciona o caractere na posição correta
+                    correta.pop(a.index(sublist))
+                    correta.insert(a.index(sublist), letra)
 
-    for sublist in a:
-        letra = sublist[0]
+                case "RED":
+                    if letra not in eliminadas:
+                        eliminadas.append(letra)
 
-        match sublist[1]:   # verifica qual a resposta
-            case "GREEN":
-                if letra not in resp_chr:
-                    resp_chr.append(letra)
+                case "YELLOW":
+                    if letra not in resp_chr:
+                        resp_chr.append(letra)
 
-                # adiciona o caractere na posição correta
-                correta.pop(a.index(sublist))
-                correta.insert(a.index(sublist), letra)
+        global words
+        words = filtro(eliminadas)
+        guess = random.choice(words)
+        print(f"{correta}\n{resp_chr}\n{eliminadas}")
+        return guess
 
-            case "RED":
-                if letra not in eliminadas:
-                    eliminadas.append(letra)
-
-            case "YELLOW":
-                if letra not in resp_chr:
-                    resp_chr.append(letra)
-    
-    words = filtro(eliminadas)
-    global words
-    guess = random.choice(words)
-    return guess
-    
+    else:
+        return "aureo"  # palavra de início, provavelmente não pode enviar assim
