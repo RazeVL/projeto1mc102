@@ -15,7 +15,7 @@ Observações:
 - Você pode implementar outras funções para auxiliar a função `player`.
 - Você pode salvar informações entre os palpites usando variáveis globais (fora de qualquer função).
 - A função recebe duas listas como argumento:
-    - guess_hist: lista de lista_palavras que foram chutadas anteriormente
+    - guess_hist: lista de palavras que foram chutadas anteriormente
     - res_hist: lista de respostas dos chutes anteriores
 - A função deve retornar uma string como palpite
 
