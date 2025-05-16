@@ -40,17 +40,38 @@ for i in palavras_possiveis:  # remove todas as palavras com tamanho invalido
 lista_palavras = palavras_filtradas.copy()
 
 
-def filtro(eliminadas):  # filtra a lista de lista_palavras possíveis, removendo todas as que tem letras eliminadas
+def filtro(vermelhas):  # filtra a lista de lista_palavras possíveis, removendo todas as que tem letras eliminadas
     placeholder = lista_palavras.copy()
     for word in placeholder:
         for char in word:
-            if char in eliminadas:
+            if char in vermelhas:
                 lista_palavras.remove(word)
                 break
     return lista_palavras
 
 
-resp_chr = []  # Letras que estão na palavra correta
+def filtro2(amarelas):
+    placeholder = lista_palavras.copy()
+    for amarela in amarelas:
+        for word in placeholder:
+            if amarela[0] not in word:
+                lista_palavras.remove(word)
+            if amarela[0] in word and amarela[0] == word[amarela[1]]:
+                lista_palavras.remove(word)
+    return lista_palavras
+
+
+def filtro3(correta):
+    placeholder = lista_palavras.copy()
+    for index, letra in enumerate(correta):
+        if letra:
+            for word in placeholder:
+                if word[index] != letra:
+                    lista_palavras.remove(word)
+    return lista_palavras
+
+
+amarelas = []  # Letras que estão na palavra correta mas na posição errada
 eliminadas = []  # Letras que não estão na palavra correta
 correta = ["", "", "", "", ""]  # resposta correta, com as letras em ordem
 
@@ -67,13 +88,11 @@ def player(guess_hist, res_hist):
             [ultima_tentativa[3], correção[3]],
             [ultima_tentativa[4], correção[4]],
             ]
-        for sublist in a:
+        for indice, sublist in enumerate(a):
             letra = sublist[0]
 
             match sublist[1]:   # verifica qual a resposta
                 case "GREEN":
-                    if letra not in resp_chr:
-                        resp_chr.append(letra)
                     if letra in eliminadas:
                         eliminadas.remove(letra)
                     # adiciona o caractere na posição correta
@@ -81,12 +100,12 @@ def player(guess_hist, res_hist):
                     correta.insert(a.index(sublist), letra)
 
                 case "RED":
-                    if letra not in eliminadas and (letra not in resp_chr):
+                    if letra not in eliminadas and letra not in amarelas:
                         eliminadas.append(letra)
 
                 case "YELLOW":
-                    if letra not in resp_chr:
-                        resp_chr.append(letra)
+                    if letra not in amarelas:
+                        amarelas.append([letra, indice])
                     if letra in eliminadas:
                         eliminadas.remove(letra)
 
@@ -94,17 +113,17 @@ def player(guess_hist, res_hist):
         global lista_sem_filtro
 
         if len("".join(correta)) != 5:
-            lista_palavras = filtro(eliminadas)
+            
             guess = random.choice(lista_palavras)
         else:
             guess = "".join(correta)
     else:
-        if 'trace' in lista_palavras:
+        if 'TRACE' in lista_palavras:
             guess = 'trace'
-        elif 'clase' in lista_palavras:
+        elif 'CLASE' in lista_palavras:
             guess = 'clase'
-        elif 'metal' in lista_palavras:
+        elif 'METAL' in lista_palavras:
             guess = 'metal'
-        elif 'elica' in lista_palavras:
+        elif 'ELICA' in lista_palavras:
             guess = 'elica'
     return guess
