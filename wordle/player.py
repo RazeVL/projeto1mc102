@@ -1,129 +1,127 @@
-
 # Nome completo do primeiro membro: Roger Honorato
 # RA do primeiro membro: 247617
 # Nome completo do segundo membro: Leonardo Paillo da Silva
 # RA do segundo membro: 198218
 
-"""
-Implemente aqui o seu código para adivinhar a palavra.
-
-Seu principal objetivo é implementar a função `player`, que deve retornar uma palavra (string) como seu próximo palpite.
-Caso sua função não retorne uma string, a automatização não irá ocorrer tanto em game.py quanto em tournament.py.
-Caso sua função retorne a string vazia, você poderá jogar manualmente (teclado).
-
-Observações:
-- Você pode implementar outras funções para auxiliar a função `player`.
-- Você pode salvar informações entre os palpites usando variáveis globais (fora de qualquer função).
-- A função recebe duas listas como argumento:
-    - guess_hist: lista de palavras que foram chutadas anteriormente
-    - res_hist: lista de respostas dos chutes anteriores
-- A função deve retornar uma string como palpite
-
-Lembretes:
-- Segue a coloração possíveis dos caracteres:
-    - Correto: verde ("GREEN")
-    - Presente mas na posição errada: amarelo ("YELLOW")
-    - Ausente: vermelho ("RED")
-
-Para mais informações, reveja o README.md
-"""
-
 import random
 from utils import load_words, ALL_COLORS
 
-palavras_possiveis = load_words()   # Carrega a lista de palavras
-palavras_filtradas = palavras_possiveis.copy()
 
-for i in palavras_possiveis:  # remove todas as palavras com tamanho invalido
+lista_palavras = load_words()
+palavras_filtradas = lista_palavras.copy()
+
+for i in lista_palavras:  # filtra as palavras com tamanho invalido
     if len(i) != 5:
         palavras_filtradas.remove(i)
 lista_palavras = palavras_filtradas.copy()
 
 
-def filtro(vermelhas):  # filtra a lista de lista_palavras possíveis, removendo todas as que tem letras eliminadas
+def filtro_red():  # remove as palavras que tem letras eliminadas
     placeholder = lista_palavras.copy()
-    for word in placeholder:
-        for char in word:
-            if char in vermelhas:
-                lista_palavras.remove(word)
+    for palavra in placeholder:
+        for letra in eliminadas:
+            if letra in palavra:
+                lista_palavras.remove(palavra)
                 break
     return lista_palavras
 
 
-def filtro2(amarelas):
+def filtro_yellow(letra, posicao):
     placeholder = lista_palavras.copy()
-    for amarela in amarelas:
-        for word in placeholder:
-            if amarela[0] not in word:
-                lista_palavras.remove(word)
-            if amarela[0] in word and amarela[0] == word[amarela[1]]:
-                lista_palavras.remove(word)
+    for palavra in placeholder:
+
+        if letra not in palavra:  # remove palavras que não possuem a letra
+            lista_palavras.remove(palavra)
+
+        else:  # remove palavras onde a letra amarela está na mesma posição
+            if palavra[posicao] == letra:
+                lista_palavras.remove(palavra)
+
     return lista_palavras
 
 
-def filtro3(correta):
+def filtro_green(letra, posicao): #segue a lógica oposta do filtro amarelo
     placeholder = lista_palavras.copy()
-    for index, letra in enumerate(correta):
-        if letra:
-            for word in placeholder:
-                if word[index] != letra:
-                    lista_palavras.remove(word)
+
+    for palavra in placeholder:
+
+        if letra not in palavra: 
+            lista_palavras.remove(palavra)
+
+        elif palavra[posicao] != letra:
+            lista_palavras.remove(palavra)
+
     return lista_palavras
 
 
-amarelas = []  # Letras que estão na palavra correta mas na posição errada
-eliminadas = []  # Letras que não estão na palavra correta
+amarelas = []  # letras que estão na palavra correta
 correta = ["", "", "", "", ""]  # resposta correta, com as letras em ordem
+eliminadas = []  # letras eliminadas
 
 
 def player(guess_hist, res_hist):
+    global lista_palavras
+
     if guess_hist != [] and res_hist != []:
         ultima_tentativa = guess_hist[-1]
         correção = res_hist[-1]
+
         # relaciona as letras com a resposta
-        a = [
+        jogada = [
             [ultima_tentativa[0], correção[0]],
             [ultima_tentativa[1], correção[1]],
             [ultima_tentativa[2], correção[2]],
             [ultima_tentativa[3], correção[3]],
             [ultima_tentativa[4], correção[4]],
             ]
-        for indice, sublist in enumerate(a):
+
+        for sublist in jogada:
             letra = sublist[0]
 
-            match sublist[1]:   # verifica qual a resposta
+            match sublist[1]:  # roda os filtros de palavras (menos o vermelho)
+
                 case "GREEN":
-                    if letra in eliminadas:
-                        eliminadas.remove(letra)
-                    # adiciona o caractere na posição correta
-                    correta.pop(a.index(sublist))
-                    correta.insert(a.index(sublist), letra)
+                    correta.pop(jogada.index(sublist))
+                    correta.insert(jogada.index(sublist), letra)
+                    lista_palavras = filtro_green(letra.upper(), jogada.index(sublist))
 
                 case "RED":
-                    if letra not in eliminadas and letra not in amarelas:
+                    if letra not in eliminadas:
                         eliminadas.append(letra)
 
                 case "YELLOW":
                     if letra not in amarelas:
-                        amarelas.append([letra, indice])
-                    if letra in eliminadas:
-                        eliminadas.remove(letra)
+                        amarelas.append(letra)
 
-        global lista_palavras
-        global lista_sem_filtro
+                    lista_palavras = filtro_yellow(letra.upper(), jogada.index(sublist))
 
         if len("".join(correta)) != 5:
-            
+            placeholder = eliminadas.copy()
+
+            for letra in placeholder:
+                if letra in correta:
+                    eliminadas.remove(letra)
+
+                elif letra in amarelas:
+                    eliminadas.remove(letra)
+
+            lista_palavras = filtro_red()  # roda depois para não se opor aos outros filtros
             guess = random.choice(lista_palavras)
+
         else:
             guess = "".join(correta)
-    else:
+
+    else: #caso do primeiro guess, com palavras 'ideais'
         if 'TRACE' in lista_palavras:
             guess = 'trace'
+
         elif 'CLASE' in lista_palavras:
             guess = 'clase'
+
         elif 'METAL' in lista_palavras:
             guess = 'metal'
+
         elif 'ELICA' in lista_palavras:
             guess = 'elica'
+
     return guess
