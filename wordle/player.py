@@ -1,8 +1,8 @@
 
 # Nome completo do primeiro membro: Roger Honorato
 # RA do primeiro membro: 247617
-# Nome completo do segundo membro: [Segundo membro da equipe]
-# RA do segundo membro: [Segundo membro da equipe]
+# Nome completo do segundo membro: Leonardo Paillo da Silva
+# RA do segundo membro: 198218
 
 """
 Implemente aqui o seu código para adivinhar a palavra.
@@ -29,12 +29,12 @@ Para mais informações, reveja o README.md
 """
 
 import random
-from utils import load_words, ALL_COLORS, load_words
+from utils import load_words, ALL_COLORS
 
-lista_sem_filtro = load_words()   # Carrega a lista de lista_palavras
-palavras_filtradas = lista_sem_filtro.copy()
+palavras_possiveis = load_words()   # Carrega a lista de palavras
+palavras_filtradas = palavras_possiveis.copy()
 
-for i in lista_sem_filtro:  # remove todas as lista_palavras com tamanho invalido
+for i in palavras_possiveis:  # remove todas as palavras com tamanho invalido
     if len(i) != 5:
         palavras_filtradas.remove(i)
 lista_palavras = palavras_filtradas.copy()
@@ -44,7 +44,7 @@ def filtro(eliminadas):  # filtra a lista de lista_palavras possíveis, removend
     placeholder = lista_palavras.copy()
     for word in placeholder:
         for char in word:
-            if (char in eliminadas):
+            if char in eliminadas:
                 lista_palavras.remove(word)
                 break
     return lista_palavras
@@ -99,5 +99,12 @@ def player(guess_hist, res_hist):
         else:
             guess = "".join(correta)
     else:
-        guess = random.choice(lista_palavras)
+        if 'trace' in lista_palavras:
+            guess = 'trace'
+        elif 'clase' in lista_palavras:
+            guess = 'clase'
+        elif 'metal' in lista_palavras:
+            guess = 'metal'
+        elif 'elica' in lista_palavras:
+            guess = 'elica'
     return guess
